@@ -17,4 +17,4 @@ lazy val simple = (project in file("simple"))
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-actor"  % akkaVersion
     )
-  )
+  ).enablePlugins(JavaServerAppPackaging)
