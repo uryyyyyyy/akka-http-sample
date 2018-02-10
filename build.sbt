@@ -18,3 +18,14 @@ lazy val simple = (project in file("simple"))
       "com.typesafe.akka" %% "akka-actor"  % akkaVersion
     )
   ).enablePlugins(JavaServerAppPackaging)
+
+lazy val functional = (project in file("functional"))
+  .settings(commonSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-http" % "10.0.11",
+      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+      "com.typesafe.akka" %% "akka-actor"  % akkaVersion
+    )
+  ).enablePlugins(JavaServerAppPackaging)
+
