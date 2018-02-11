@@ -1,29 +1,19 @@
 package com.github.uryyyyyyy.jsonApi
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.marshalling.Marshal
-import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.{Directive1, _}
 import com.github.uryyyyyyy.jsonApi.controller.HelloController
 import com.github.uryyyyyyy.jsonApi.dto.PersonJsonSupportArgo._
 import com.github.uryyyyyyy.jsonApi.dto.{FieldErrorInfo, ModelValidationRejection, Person, PersonValidator}
-import spray.json.DefaultJsonProtocol
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 class Routes(system: ActorSystem) extends Directives with CustomDirectives {
   implicit val contactValidator = PersonValidator
   implicit val ec = system.dispatcher
-  implicit val validatedFieldFormats = jsonFormat2(FieldErrorInfo)
 
   def myRejectionHandler =
     RejectionHandler.newBuilder()
       .handle { case ModelValidationRejection(errors) =>
-        val ss = Marshal(StatusCodes.BadRequest -> errors).to[HttpResponse]
-        val res = Await.result(ss, Duration.Inf)
-        complete(res)
+        HelloController.handleAA(errors)
       }
       .result()
 
@@ -31,7 +21,8 @@ class Routes(system: ActorSystem) extends Directives with CustomDirectives {
     handleRejections(myRejectionHandler){
       path("hello") {
         get {
-          HelloController.helloGet
+          val aa: Route = (ctx: RequestContext) => HelloController.helloGet(ctx)
+          aa
         } ~ post {
           entity(as[Person]){ implicit person =>
             validateModel(person).apply { validatedPerson =>
@@ -52,7 +43,7 @@ trait Validator[T] extends (T => Seq[FieldErrorInfo]) {
 
 }
 
-trait CustomDirectives extends SprayJsonSupport with DefaultJsonProtocol with Directives {
+trait CustomDirectives extends Directives {
 
   def validateModel[T](model: T)(implicit validator: Validator[T]): Directive1[T] = {
     validator(model) match {

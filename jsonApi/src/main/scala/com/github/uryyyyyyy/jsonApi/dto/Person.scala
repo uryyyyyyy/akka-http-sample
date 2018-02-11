@@ -1,10 +1,12 @@
 package com.github.uryyyyyyy.jsonApi.dto
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Rejection
 import argonaut.Argonaut._
 import argonaut.CodecJson
 import com.github.uryyyyyyy.jsonApi.Validator
 import de.heikoseeberger.akkahttpargonaut.ArgonautSupport
+import spray.json.DefaultJsonProtocol
 
 case class Coin(value: Int){
   require(0 <= value, "value must be plus")
@@ -35,4 +37,8 @@ object PersonValidator extends Validator[Person] {
     (ageErrorOpt :: Nil).flatten
   }
 
+}
+
+object FFF extends SprayJsonSupport with DefaultJsonProtocol {
+  implicit val validatedFieldFormats = jsonFormat2(FieldErrorInfo)
 }
