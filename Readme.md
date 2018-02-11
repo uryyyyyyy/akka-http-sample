@@ -3,13 +3,13 @@
 
 akka-http samples for web-app
 
-## simple
+## json api
 
-`sbt> project simple`
+`sbt> project jsonApi`
 
 ### hot reload
 
-`sbt:simple> ~restart`
+`sbt:jsonApi> ~reStart`
 
 ### packaging
 
