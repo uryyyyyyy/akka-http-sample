@@ -1,13 +1,13 @@
 package com.github.uryyyyyyy.jsonApi.controller
 
 import akka.http.scaladsl.server._
-import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
+import com.github.uryyyyyyy.jsonApi.route.JsonFormat
 import com.github.uryyyyyyy.jsonApi.dto.{Coin, Person, PersonValidator}
 import com.github.uryyyyyyy.jsonApi.route.ValidationDirectives
 import com.github.uryyyyyyy.jsonApi.service.HelloService
 import com.google.inject.Inject
 
-class HelloController @Inject()(service: HelloService) extends ValidationDirectives {
+class HelloController @Inject()(service: HelloService) extends ValidationDirectives with JsonFormat {
 
   def helloGet(): Route = {
     extractRequest { req =>
@@ -18,13 +18,15 @@ class HelloController @Inject()(service: HelloService) extends ValidationDirecti
     }
   }
 
-  def helloPost(person: Person): Route = {
-    validateModel(person, PersonValidator) { validatedPerson =>
-      extractRequest { req =>
-        println(req.headers)
-        println(service.hello())
-        val newPerson = validatedPerson.copy(name = s"${person.name} EX")
-        complete(newPerson)
+  def helloPost(): Route = {
+    entity(as[Person]) { person =>
+      validateModel(person, PersonValidator) { validatedPerson =>
+        extractRequest { req =>
+          println(req.headers)
+          println(service.hello())
+          val newPerson = validatedPerson.copy(name = s"${person.name} EX")
+          complete(newPerson)
+        }
       }
     }
   }
