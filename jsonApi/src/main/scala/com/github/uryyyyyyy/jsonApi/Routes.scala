@@ -7,7 +7,7 @@ import com.github.uryyyyyyy.jsonApi.controller.HelloController
 import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
 import com.github.uryyyyyyy.jsonApi.dto._
 
-class Routes(system: ActorSystem) extends Directives with CustomDirectives {
+class Routes(system: ActorSystem) extends CustomDirectives {
   implicit val ec = system.dispatcher
 
   def myRejectionHandler =
@@ -39,17 +39,19 @@ class Routes(system: ActorSystem) extends Directives with CustomDirectives {
 
 }
 
-trait Validator[T] extends (T => Seq[FieldErrorInfo]) {
+trait Validator[T] {
 
   protected def validationStage(rule: Boolean, fieldName: String, errorText: String): Option[FieldErrorInfo] =
     if (rule) Some(FieldErrorInfo(fieldName, errorText)) else None
+
+  def validate(model: T): Seq[FieldErrorInfo]
 
 }
 
 trait CustomDirectives extends Directives {
 
   def validateModel[T](model: T)(implicit validator: Validator[T]): Directive1[T] = {
-    validator(model) match {
+    validator.validate(model) match {
       case Nil => provide(model)
       case errors: Seq[FieldErrorInfo] => reject(ModelValidationRejection(errors))
     }

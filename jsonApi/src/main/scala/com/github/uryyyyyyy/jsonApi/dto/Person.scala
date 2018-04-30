@@ -28,13 +28,8 @@ object PersonValidator extends Validator[Person] {
       "coin must not be minus"
     )
 
-  override def apply(model: Person): Seq[FieldErrorInfo] = {
-
-    val ageErrorOpt: Option[FieldErrorInfo] = ageRule(model.age)
-
-    val coinErrorOpt: Option[FieldErrorInfo] = coinRule(model.wallet.head)
-
-    (ageErrorOpt :: coinErrorOpt :: Nil).flatten
+  override def validate(model: Person): Seq[FieldErrorInfo] = {
+    (ageRule(model.age) :: coinRule(model.wallet.head) :: Nil).flatten
   }
 
 }
