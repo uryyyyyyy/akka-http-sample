@@ -1,19 +1,19 @@
 package com.github.uryyyyyyy.jsonApi
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directive1, _}
 import com.github.uryyyyyyy.jsonApi.controller.HelloController
-import com.github.uryyyyyyy.jsonApi.dto.PersonJsonSupportArgo._
-import com.github.uryyyyyyy.jsonApi.dto.{FieldErrorInfo, ModelValidationRejection, Person, PersonValidator}
+import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
+import com.github.uryyyyyyy.jsonApi.dto._
 
 class Routes(system: ActorSystem) extends Directives with CustomDirectives {
-  implicit val contactValidator = PersonValidator
   implicit val ec = system.dispatcher
 
   def myRejectionHandler =
     RejectionHandler.newBuilder()
       .handle { case ModelValidationRejection(errors) =>
-        HelloController.handleAA(errors)
+        complete(StatusCodes.BadRequest, ModelValidationRejection(errors))
       }
       .result()
 
@@ -21,12 +21,15 @@ class Routes(system: ActorSystem) extends Directives with CustomDirectives {
     handleRejections(myRejectionHandler){
       path("hello") {
         get {
-          val aa: Route = (ctx: RequestContext) => HelloController.helloGet(ctx)
-          aa
+          extractRequest { req =>
+            HelloController.helloGet(req)
+          }
         } ~ post {
           entity(as[Person]){ implicit person =>
-            validateModel(person).apply { validatedPerson =>
-              HelloController.helloPost(validatedPerson)
+            validatePerson(person).apply { validatedPerson =>
+              extractRequest { req =>
+                HelloController.helloPost(validatedPerson, req)
+              }
             }
           }
         }
@@ -50,5 +53,9 @@ trait CustomDirectives extends Directives {
       case Nil => provide(model)
       case errors: Seq[FieldErrorInfo] => reject(ModelValidationRejection(errors))
     }
+  }
+
+  def validatePerson(model: Person): Directive1[Person] = {
+    validateModel(model)(PersonValidator)
   }
 }
