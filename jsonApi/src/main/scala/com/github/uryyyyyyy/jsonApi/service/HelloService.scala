@@ -1,17 +1,17 @@
 package com.github.uryyyyyyy.jsonApi.service
 
 trait HelloService {
-  def hello(): Unit
+  def hello(): String
 }
 
 class HelloServiceImpl extends HelloService{
-  def hello(): Unit = {
-    println("impl")
+  def hello(): String = {
+    "impl"
   }
 }
 
 class HelloServiceMock extends HelloService{
-  def hello(): Unit = {
-    println("mock")
+  def hello(): String = {
+    "mock"
   }
 }
