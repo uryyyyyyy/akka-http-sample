@@ -1,5 +1,7 @@
 package com.github.uryyyyyyy.jsonApi.route
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directive1, Directives, Rejection}
 import spray.json.{JsField, JsObject, JsString}
 
@@ -27,14 +29,14 @@ trait Validator[T] {
 
 }
 
-trait CustomDirectives extends Directives {
+trait ValidationDirectives extends Directives with SprayJsonSupport {
 
   def validateModel[T](model: T, validator: Validator[T]): Directive1[T] = {
     val obj = validator.validate(model)
     if (obj.isEmpty) {
       provide(model)
     } else {
-      reject(CustomValidation(obj.get))
+      complete(StatusCodes.BadRequest, obj.get)
     }
   }
 }

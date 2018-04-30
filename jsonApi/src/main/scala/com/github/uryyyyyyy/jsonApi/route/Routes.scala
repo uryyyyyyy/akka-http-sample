@@ -1,24 +1,16 @@
 package com.github.uryyyyyyy.jsonApi.route
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
 import com.github.uryyyyyyy.jsonApi.controller.HelloController
 import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
 import com.github.uryyyyyyy.jsonApi.dto._
 
-class Routes(system: ActorSystem) extends CustomDirectives {
+class Routes(system: ActorSystem) extends ValidationDirectives with ErrorHandlerDirective {
   implicit val ec = system.dispatcher
 
-  def myRejectionHandler =
-    RejectionHandler.newBuilder()
-      .handle { case CustomValidation(value) =>
-        complete(StatusCodes.BadRequest, value)
-      }
-      .result()
-
-  val route = {
-    handleRejections(myRejectionHandler){
+  val route: Route = {
+    errorHandle {
       path("hello") {
         get {
           extractRequest { req =>
