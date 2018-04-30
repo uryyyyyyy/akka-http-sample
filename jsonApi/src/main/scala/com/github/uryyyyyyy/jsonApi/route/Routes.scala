@@ -1,28 +1,22 @@
 package com.github.uryyyyyyy.jsonApi.route
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.server._
 import com.github.uryyyyyyy.jsonApi.controller.HelloController
 import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
 import com.github.uryyyyyyy.jsonApi.dto._
+import com.google.inject.Injector
 
-class Routes(system: ActorSystem) extends ValidationDirectives with ErrorHandlerDirective {
-  implicit val ec = system.dispatcher
+class Routes(injector: Injector) extends ValidationDirectives with ErrorHandlerDirective {
+  val helloController = injector.getInstance(classOf[HelloController])
 
   val route: Route = {
     errorHandle {
       path("hello") {
         get {
-          extractRequest { req =>
-            HelloController.helloGet(req)
-          }
+          helloController.helloGet()
         } ~ post {
-          entity(as[Person]){ implicit person =>
-            validateModel(person, PersonValidator) { validatedPerson =>
-              extractRequest { req =>
-                HelloController.helloPost(validatedPerson, req)
-              }
-            }
+          entity(as[Person]){ person =>
+            helloController.helloPost(person)
           }
         }
       }

@@ -17,6 +17,7 @@ lazy val jsonApi = (project in file("jsonApi"))
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-actor"  % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
+      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+      "com.google.inject" % "guice" % "4.2.0"
     )
   ).enablePlugins(JavaServerAppPackaging)
