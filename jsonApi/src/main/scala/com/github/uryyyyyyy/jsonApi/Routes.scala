@@ -16,8 +16,11 @@ class Routes(injector: Injector) extends ValidationDirectives with ErrorHandlerD
         } ~ post {
           helloController.helloPost()
         }
+      } ~ path("login") {
+        get {
+          helloController.login()
+        }
       }
     }
   }
-
 }
