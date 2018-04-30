@@ -23,14 +23,3 @@ lazy val jsonApi = (project in file("jsonApi"))
       "org.scalaz" %% "scalaz-core" % "7.2.19"
     )
   ).enablePlugins(JavaServerAppPackaging)
-
-lazy val functional = (project in file("functional"))
-  .settings(commonSettings: _*)
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-http" % "10.0.11",
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-      "com.typesafe.akka" %% "akka-actor"  % akkaVersion
-    )
-  ).enablePlugins(JavaServerAppPackaging)
-
