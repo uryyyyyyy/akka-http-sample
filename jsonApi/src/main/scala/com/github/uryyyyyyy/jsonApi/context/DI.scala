@@ -1,7 +1,7 @@
 package com.github.uryyyyyyy.jsonApi.context
 
 import akka.actor.ActorSystem
-import com.github.uryyyyyyy.jsonApi.controller.HelloController
+import com.github.uryyyyyyy.jsonApi.controller.{HelloController, UploadController}
 import com.github.uryyyyyyy.jsonApi.service.{HelloService, HelloServiceImpl}
 import com.google.inject.{AbstractModule, Guice, Injector}
 
@@ -11,6 +11,7 @@ object DI {
       bind(classOf[HelloService]).to(classOf[HelloServiceImpl])
       bind(classOf[ActorSystem]).toInstance(system)
       bind(classOf[HelloController])
+      bind(classOf[UploadController])
     }
   })
 }
