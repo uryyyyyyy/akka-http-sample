@@ -3,6 +3,7 @@ package com.github.uryyyyyyy.jsonApi
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import com.github.uryyyyyyy.jsonApi.route.Routes
 
 object Main {
   def main(args: Array[String]) {

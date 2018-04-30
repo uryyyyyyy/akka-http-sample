@@ -1,12 +1,9 @@
 package com.github.uryyyyyyy.jsonApi.controller
 
-import akka.http.scaladsl.marshalling.{Marshal, ToResponseMarshallable}
-import akka.http.scaladsl.model.{HttpRequest, StatusCodes}
+import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.server._
 import com.github.uryyyyyyy.jsonApi.dto.JsonFormatCustom._
-import com.github.uryyyyyyy.jsonApi.dto.{Coin, ModelValidationRejection, Person}
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import com.github.uryyyyyyy.jsonApi.dto.{Coin, Person}
 
 object HelloController extends Directives{
 
