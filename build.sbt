@@ -1,14 +1,16 @@
 name := "akka-http-sample"
 
-scalaVersion := "2.12.4"
-
 lazy val commonSettings = Seq(
   organization := "com.github.uryyyyyyy",
-  scalaVersion := "2.12.4"
+  scalaVersion := "2.12.6"
 )
 
 val akkaVersion = "2.5.9"
 val akkaHttpVersion = "10.0.11"
+
+lazy val root = (project in file("."))
+  .settings(commonSettings: _*)
+  .aggregate(jsonApi)
 
 lazy val jsonApi = (project in file("jsonApi"))
   .settings(commonSettings: _*)
