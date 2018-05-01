@@ -4,9 +4,11 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.github.uryyyyyyy.jsonApi.context.DI
+import kamon.Kamon
 
 object Main {
   def main(args: Array[String]) {
+    Kamon.loadReportersFromConfig()
 
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
